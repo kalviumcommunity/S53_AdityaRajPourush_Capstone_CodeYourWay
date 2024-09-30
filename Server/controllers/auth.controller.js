@@ -123,6 +123,10 @@ const logInUser = async (req, res, next) => {
   } catch (error) {
     // Handle any errors that occur during the login process
     // process.env.NODE_ENV == 'production' ? null : console.error(error);
+    if(error.statusCode == 429) {
+      // This is a rate limit error
+      return next(new ApiError(429, error.message || "Too many attempts. Please try again later."));
+    }
     const errorMessage = "An error occurred during login";
     const err = new ApiError(500, errorMessage);
     return next(err);
